@@ -94,7 +94,7 @@ sub startup {
 
         $self->provisioning();
 
-        $lockfile->remove();
+        $lockfile->remove() if -e $lockfile;
     });
 
     # Create directory if needed
