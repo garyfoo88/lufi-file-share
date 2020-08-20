@@ -90,10 +90,11 @@ sub startup {
             }
         }
 
-        $lockfile = Mojo::File->new($lockfile)->touch();
+        Mojo::File->new($lockfile)->open('>'); # Create the file, like ->touch() but does not croak on fail
 
         $self->provisioning();
 
+        unlink $lockfile if -e $lockfile;
     });
 
     # Create directory if needed
@@ -245,3 +246,4 @@ sub startup {
 }
 
 1;
+
