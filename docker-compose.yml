@@ -1,0 +1,35 @@
+version: "3.7"
+
+volumes:
+  lufidb-data:
+  lufi-data:
+  lufi-files:
+
+services:
+  lufidb:
+    image: postgres:12
+    container_name: lufidb
+    restart: always
+    env_file:
+      - lufi.env
+    volumes:
+      - lufidb-data:/var/lib/postgresql/data
+
+  lufi:
+    image: lufi
+    container_name: lufi
+    init: true
+    depends_on:
+      - lufidb
+    ports:
+      - 8081:8081
+    links:
+      - lufidb:lufidb
+    volumes:
+      - lufi-data:/lufi/data
+      - lufi-files:/lufi/files
+    labels:
+      - "traefik.frontend.rule=Host:drop.test.picasoft.net"
+      - "traefik.backend=lufi"
+      - "traefik.port=8081"
+      - "traefik.enable=true"
